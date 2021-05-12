@@ -1,5 +1,3 @@
-// @ts-check
+import translate from './translate';
 
-import init from './init.js';
-
-init();
+export { translate };

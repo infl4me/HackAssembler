@@ -1,16 +1,7 @@
-// @ts-check
+import { translate } from '../src';
+import { addInput } from '../__fixtures__/input/add';
+import { addOutput } from '../__fixtures__/output/add';
 
-import { promises as fs } from 'fs';
-import path from 'path';
-import init from '../src/init';
-
-beforeEach(async () => {
-  const pathToHtml = path.resolve(__dirname, '__fixtures__/index.html');
-  const html = await fs.readFile(pathToHtml, 'utf8');
-  document.body.innerHTML = html;
-});
-
-test('init', () => {
-  init();
-  expect(true).toBeDefined();
+test('translate', () => {
+  expect(translate(addInput)).toBe(addOutput);
 });
