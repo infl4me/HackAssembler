@@ -1,3 +1,4 @@
-import translate from './translate';
+import { parse } from './parse';
+import { translate } from './translate';
 
-export { translate };
+export { parse, translate };
