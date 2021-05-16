@@ -22,6 +22,32 @@ const JUMPS = {
   JMP: '111',
 };
 
+const PREDEFINED_SYMBOLS = {
+  SP: '0',
+  LCL: '1',
+  ARG: '2',
+  THIS: '3',
+  THAT: '4',
+  R0: '0',
+  R1: '1',
+  R2: '2',
+  R3: '3',
+  R4: '4',
+  R5: '5',
+  R6: '6',
+  R7: '7',
+  R8: '8',
+  R9: '9',
+  R10: '10',
+  R11: '11',
+  R12: '12',
+  R13: '13',
+  R14: '14',
+  R15: '15',
+  SCREEN: '16384',
+  KBD: '24576',
+};
+
 const getComputation = (key) => {
   switch (key) {
     case '0':
@@ -76,11 +102,33 @@ const getComputation = (key) => {
   }
 };
 
-export const translate = (instructions) => {
+export const translate = ({ instructions, labelData }) => {
+  let varibleMemoryAddressCount = 16;
+
   const translated = instructions.map((instruction) => {
     switch (instruction.type) {
       case 'A': {
-        return `0${dec2bin(instruction.data, 15)}`;
+        if (instruction.data === '') {
+          throw new Error('Invalid at value');
+        }
+
+        if (!Number.isNaN(Number(instruction.data))) {
+          return `0${dec2bin(instruction.data, 15)}`;
+        }
+
+        const predefinedSymbolValue = PREDEFINED_SYMBOLS[instruction.data];
+        if (predefinedSymbolValue) {
+          return `0${dec2bin(predefinedSymbolValue, 15)}`;
+        }
+
+        const label = labelData[instruction.data];
+        if (label) {
+          return `0${dec2bin(label.position, 15)}`;
+        }
+
+        const variableMemoryValue = `0${dec2bin(varibleMemoryAddressCount, 15)}`;
+        varibleMemoryAddressCount += 1;
+        return variableMemoryValue;
       }
       case 'C': {
         if (instruction.data.comp === undefined) {
@@ -93,7 +141,7 @@ export const translate = (instructions) => {
         if (!compValue) {
           throw new Error(`Invalid comp provided: "${instruction.data.comp}"`);
         }
-        const aBit = compValue.includes('M') ? '1' : '0';
+        const aBit = instruction.data.comp.includes('M') ? '1' : '0';
 
         const destKey = instruction.data.dest === undefined ? null : instruction.data.dest;
         const destValue = DESTINATIONS[destKey];
