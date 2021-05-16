@@ -29,11 +29,11 @@ test('parse max', async () => {
     { data: { comp: 'M', dest: 'D' }, type: 'C' },
     { data: 'OUTPUT_D', type: 'A' },
     { data: { comp: '0', jmp: 'JMP' }, type: 'C' },
-    { data: 'R0', jumpLabel: 'OUTPUT_FIRST', type: 'A' },
+    { data: 'R0', jumpLabels: ['OUTPUT_FIRST'], type: 'A' },
     { data: { comp: 'M', dest: 'D' }, type: 'C' },
-    { data: 'R2', jumpLabel: 'OUTPUT_D', type: 'A' },
+    { data: 'R2', jumpLabels: ['OUTPUT_D'], type: 'A' },
     { data: { comp: 'D', dest: 'M' }, type: 'C' },
-    { data: 'INFINITE_LOOP', jumpLabel: 'INFINITE_LOOP', type: 'A' },
+    { data: 'INFINITE_LOOP', jumpLabels: ['INFINITE_LOOP'], type: 'A' },
     { data: { comp: '0', jmp: 'JMP' }, type: 'C' },
   ]);
   expect(labelData).toEqual({
@@ -57,7 +57,7 @@ test('parse rect', async () => {
     { data: { comp: 'A', dest: 'D' }, type: 'C' },
     { data: 'address', type: 'A' },
     { data: { comp: 'D', dest: 'M' }, type: 'C' },
-    { data: 'address', jumpLabel: 'LOOP', type: 'A' },
+    { data: 'address', jumpLabels: ['LOOP'], type: 'A' },
     { data: { comp: 'M', dest: 'A' }, type: 'C' },
     { data: { comp: '-1', dest: 'M' }, type: 'C' },
     { data: 'address', type: 'A' },
@@ -70,7 +70,7 @@ test('parse rect', async () => {
     { data: { comp: 'M-1', dest: 'MD' }, type: 'C' },
     { data: 'LOOP', type: 'A' },
     { data: { comp: 'D', jmp: 'JGT' }, type: 'C' },
-    { data: 'INFINITE_LOOP', jumpLabel: 'INFINITE_LOOP', type: 'A' },
+    { data: 'INFINITE_LOOP', jumpLabels: ['INFINITE_LOOP'], type: 'A' },
     { data: { comp: '0', jmp: 'JMP' }, type: 'C' },
   ]);
   expect(labelData).toEqual({ INFINITE_LOOP: { position: 23 }, LOOP: { position: 10 } });

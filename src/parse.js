@@ -24,23 +24,25 @@ export const parse = (input) => {
   const instructions = [];
   let currentInstructionValue = '';
   let cInstructionParts = {};
-  let jumpLabel = null;
+  let jumpLabels = [];
   const labelData = {};
 
   const endInstruction = (symbol, type, data) => {
     instructions.push({
       type,
       data,
-      ...(jumpLabel && { jumpLabel }),
+      ...(jumpLabels.length > 0 && { jumpLabels }),
     });
 
-    if (jumpLabel) {
-      labelData[jumpLabel] = {
-        position: instructions.length - 1,
-      };
+    if (jumpLabels.length > 0) {
+      jumpLabels.forEach((jumpLabel) => {
+        labelData[jumpLabel] = {
+          position: instructions.length - 1,
+        };
+      });
     }
 
-    jumpLabel = null;
+    jumpLabels = [];
     cInstructionParts = {};
     currentInstructionValue = '';
     state = symbol === SPACE_SYMBOL ? STATES.AFTER : STATES.BEFORE;
@@ -78,7 +80,7 @@ export const parse = (input) => {
       case STATES.INSIDE_LABEL: {
         if (currentSymbol === LABEL_CLOSE_TRIGGER) {
           state = STATES.AFTER;
-          jumpLabel = currentInstructionValue;
+          jumpLabels.push(currentInstructionValue);
           currentInstructionValue = '';
         } else if (currentSymbol === SPACE_SYMBOL || currentSymbol === LINE_END_SYMBOL) {
           throw new Error('Sytax error');
