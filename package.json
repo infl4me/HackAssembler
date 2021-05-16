@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "test": "jest --colors --watch"
+    "test": "jest --colors"
   },
   "jest": {
     "verbose": true,
