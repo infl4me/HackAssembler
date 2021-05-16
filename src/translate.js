@@ -104,6 +104,18 @@ const getComputation = (key) => {
 
 export const translate = ({ instructions, labelData }) => {
   let varibleMemoryAddressCount = 16;
+  const VARIABLES_MEMORY_MAP = {};
+
+  const allocate = (variable) => {
+    if (VARIABLES_MEMORY_MAP[variable]) {
+      return VARIABLES_MEMORY_MAP[variable];
+    }
+
+    const address = varibleMemoryAddressCount;
+    VARIABLES_MEMORY_MAP[variable] = address;
+    varibleMemoryAddressCount += 1;
+    return address;
+  };
 
   const translated = instructions.map((instruction) => {
     switch (instruction.type) {
@@ -126,9 +138,8 @@ export const translate = ({ instructions, labelData }) => {
           return `0${dec2bin(label.position, 15)}`;
         }
 
-        const variableMemoryValue = `0${dec2bin(varibleMemoryAddressCount, 15)}`;
-        varibleMemoryAddressCount += 1;
-        return variableMemoryValue;
+        const address = allocate(instruction.data);
+        return `0${dec2bin(address, 15)}`;
       }
       case 'C': {
         if (instruction.data.comp === undefined) {

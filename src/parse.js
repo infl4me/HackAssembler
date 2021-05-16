@@ -1,4 +1,4 @@
-// const COMMENT_SYMBOL = '/';
+const COMMENT_SYMBOL = '/';
 const SPACE_SYMBOL = ' ';
 const LINE_END_SYMBOL = '\n';
 const A_TRIGGER = '@';
@@ -49,11 +49,6 @@ export const parse = (input) => {
   for (let i = 0; i < input.length; i += 1) {
     const currentSymbol = input[i];
 
-    // console.log('state>>', state);
-    // console.log('cInstrctionParts>>', cInstrctionParts);
-    // console.log('currentInstructionValue>>', currentInstructionValue);
-    // console.log('currentSymbol>>', currentSymbol);
-
     switch (state) {
       case STATES.BEFORE: {
         if (currentSymbol === A_TRIGGER) {
@@ -62,6 +57,12 @@ export const parse = (input) => {
           state = STATES.INSIDE_LABEL;
         } else if (currentSymbol === SPACE_SYMBOL || currentSymbol === LINE_END_SYMBOL) {
           currentInstructionValue = '';
+        } else if (currentSymbol === COMMENT_SYMBOL) {
+          if (input[i + 1] !== COMMENT_SYMBOL) {
+            throw new Error('Syntax error');
+          } else {
+            state = STATES.INSIDE_COMMENT;
+          }
         } else {
           state = STATES.INSIDE_C;
           currentInstructionValue += currentSymbol;
@@ -123,6 +124,12 @@ export const parse = (input) => {
           endInstruction(currentSymbol, 'C', cInstructionParts);
         } else {
           currentInstructionValue += currentSymbol;
+        }
+        break;
+      }
+      case STATES.INSIDE_COMMENT: {
+        if (currentSymbol === LINE_END_SYMBOL) {
+          state = STATES.BEFORE;
         }
         break;
       }
