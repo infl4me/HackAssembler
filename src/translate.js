@@ -1,3 +1,5 @@
+import { dec2bin } from './utils';
+
 const DESTINATIONS = {
   null: '000',
   M: '001',
@@ -33,9 +35,10 @@ const COMPUTATIONS = {
 export const translate = (instructions) => {
   const translated = instructions.map((instruction) => {
     switch (instruction.type) {
-      case 'A':
+      case 'A': {
         return `0${dec2bin(instruction.data, 15)}`;
-      case 'C':
+      }
+      case 'C': {
         if (instruction.data.comp === undefined) {
           throw new Error('Computation is missed');
         } else if (instruction.data.dest === undefined && instruction.data.jmp === undefined) {
@@ -60,22 +63,11 @@ export const translate = (instructions) => {
         }
 
         return `1110${compValue}${destValue}${jmpValue}`;
+      }
       default:
-        break;
+        throw new Error(`Unknown type: "${instruction.type}"`);
     }
   });
 
   return translated.join('\n');
-};
-
-const dec2bin = (dec, width = 16) => {
-  const bin = parseInt(dec, 10).toString(2);
-  const leadingZerosLength = width - bin.length;
-  const leadingZeros = new Array(leadingZerosLength).fill('0').join('');
-
-  return `${leadingZeros}${bin}`;
-};
-
-const throwSyntaxError = () => {
-  throw new Error('Syntax error');
 };

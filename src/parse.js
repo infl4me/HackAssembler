@@ -1,4 +1,4 @@
-const COMMENT_SYMBOL = '/';
+// const COMMENT_SYMBOL = '/';
 const SPACE_SYMBOL = ' ';
 const LINE_END_SYMBOL = '\n';
 const A_TRIGGER = '@';
@@ -93,25 +93,23 @@ export const parse = (input) => {
           } else {
             currentInstructionValue += currentSymbol;
           }
+        } else if (currentSymbol === '=') {
+          cInstrctionParts.dest = currentInstructionValue;
+          currentInstructionValue = '';
+        } else if (currentSymbol === ';') {
+          cInstrctionParts.comp = currentInstructionValue;
+          currentInstructionValue = '';
+        } else if (currentSymbol === SPACE_SYMBOL || currentSymbol === LINE_END_SYMBOL) {
+          cInstrctionParts.dest = currentInstructionValue;
+          instructions.push({
+            type: 'C',
+            data: cInstrctionParts,
+          });
+          currentInstructionValue = '';
+          cInstrctionParts = {};
+          state = currentSymbol === SPACE_SYMBOL ? STATES.AFTER : STATES.BEFORE;
         } else {
-          if (currentSymbol === '=') {
-            cInstrctionParts.dest = currentInstructionValue;
-            currentInstructionValue = '';
-          } else if (currentSymbol === ';') {
-            cInstrctionParts.comp = currentInstructionValue;
-            currentInstructionValue = '';
-          } else if (currentSymbol === SPACE_SYMBOL || currentSymbol === LINE_END_SYMBOL) {
-            cInstrctionParts.dest = currentInstructionValue;
-            instructions.push({
-              type: 'C',
-              data: cInstrctionParts,
-            });
-            currentInstructionValue = '';
-            cInstrctionParts = {};
-            state = currentSymbol === SPACE_SYMBOL ? STATES.AFTER : STATES.BEFORE;
-          } else {
-            currentInstructionValue += currentSymbol;
-          }
+          currentInstructionValue += currentSymbol;
         }
         break;
       }
