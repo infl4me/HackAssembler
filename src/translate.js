@@ -22,14 +22,58 @@ const JUMPS = {
   JMP: '111',
 };
 
-const COMPUTATIONS = {
-  0: '101010',
-  1: '111111',
-  '-1': '111010',
-  D: '001100',
-  A: '110000',
+const getComputation = (key) => {
+  switch (key) {
+    case '0':
+      return '101010';
+    case '1':
+      return '111111';
+    case '-1':
+      return '111010';
+    case 'D':
+      return '001100';
+    case 'A':
+    case 'M':
+      return '110000';
+    case '!D':
+      return '001101';
+    case '!A':
+    case '!M':
+      return '110001';
+    case '-D':
+      return '001111';
+    case '-A':
+    case '-M':
+      return '110011';
+    case 'D+1':
+      return '011111';
+    case 'A+1':
+    case 'M+1':
+      return '110111';
+    case 'D-1':
+      return '001110';
+    case 'A-1':
+    case 'M-1':
+      return '110010';
+    case 'D+A':
+    case 'D+M':
+      return '000010';
+    case 'D-A':
+    case 'D-M':
+      return '010011';
+    case 'A-D':
+    case 'M-D':
+      return '000111';
+    case 'D&A':
+    case 'D&M':
+      return '000000';
+    case 'D|A':
+    case 'D|M':
+      return '010101';
 
-  'D+A': '000010',
+    default:
+      return null;
+  }
 };
 
 export const translate = (instructions) => {
@@ -45,7 +89,7 @@ export const translate = (instructions) => {
           throw new Error('No destination or jump provided');
         }
 
-        const compValue = COMPUTATIONS[instruction.data.comp];
+        const compValue = getComputation(instruction.data.comp);
         if (!compValue) {
           throw new Error(`Invalid comp provided: "${instruction.data.comp}"`);
         }
