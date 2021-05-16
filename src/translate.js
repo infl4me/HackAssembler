@@ -49,6 +49,7 @@ export const translate = (instructions) => {
         if (!compValue) {
           throw new Error(`Invalid comp provided: "${instruction.data.comp}"`);
         }
+        const aBit = compValue.includes('M') ? '1' : '0';
 
         const destKey = instruction.data.dest === undefined ? null : instruction.data.dest;
         const destValue = DESTINATIONS[destKey];
@@ -62,7 +63,7 @@ export const translate = (instructions) => {
           throw new Error(`Invalid jmp provided: "${instruction.data.jmp}"`);
         }
 
-        return `1110${compValue}${destValue}${jmpValue}`;
+        return `111${aBit}${compValue}${destValue}${jmpValue}`;
       }
       default:
         throw new Error(`Unknown type: "${instruction.type}"`);
