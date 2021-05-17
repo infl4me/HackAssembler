@@ -6,8 +6,8 @@ Developed within project 6 of the nand2tetris course: https://github.com/infl4me
 make install
 ```
 
-## Run
+## Test
 
 ```sh
-make develop
+make test
 ```
